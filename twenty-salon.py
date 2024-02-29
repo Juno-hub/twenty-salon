@@ -1,6 +1,7 @@
 from tkinter import *
-from openpyxl import Workbook
-from datetime import datetime, timedelta
+import tkinter.ttk as ttk
+# from openpyxl import Workbook
+# from datetime import datetime, timedelta
 
 def set_screen():
     # Set screen icon
@@ -16,7 +17,7 @@ def set_screen():
 
     # Setting screen size
     app_width = 280
-    app_height = 320
+    app_height = 350
 
     # Calculate window position
     x = (screen_width - app_width) // 2
@@ -39,36 +40,37 @@ def delete_name():
 def clear_name():
     list_name.delete(0, END) # Listbox 에 있는 멤버 명단 초기화
     
+# def add_schedule():
+#     # Create a new Workbook
+#     wb = Workbook()
+#     ws = wb.active
 
-def add_schedule(year, month):
-    # Create a new Workbook
-    wb = Workbook()
-    ws = wb.active
+#     # Set properties of WorkSheet
+#     ws.title = "스무살롱 녹음일정"
+#     ws.sheet_properties.tabColor = "0888D0" # RGB 형태로 값을 넣어주면 탭 색상 변경
 
-    # Set properties of WorkSheet
-    ws.title = "스무살롱 녹음일정"
-    ws.sheet_properties.tabColor = "0888D0" # RGB 형태로 값을 넣어주면 탭 색상 변경
-
-    # Define weekdays
-    weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+#     # Define weekdays
+#     weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
     
-    # Set column headers with weekdays
-    for i, day in enumerate(weekdays):
-        ws.cell(row=1, column=i+1, value=day)
+#     # Set column headers with weekdays
+#     for i, day in enumerate(weekdays):
+#         ws.cell(row=1, column=i+1, value=day)
     
-    # Get the first day of the month
-    first_day = datetime(year, month, 1)
+#     # Get the first day of the month
+#     first_day = datetime(year, month, 1)
 
-    # Calculate the starting column for the first day
-    start_column = first_day.weekday() + 1
-    print(first_day.weekday())
-    # # 가용 가능한 인원을 기록하는 WorkSheet
-    # ws_available = wb.create_sheet("3월 녹음 가용 인원")
-    # member = list_name.get(0, END) # 가용 가능 인원
-    # ws_available.append(member)
+#     # Calculate the starting column for the first day
+#     start_column = first_day.weekday() + 1
+#     # # 가용 가능한 인원을 기록하는 WorkSheet
+#     # ws_available = wb.create_sheet("3월 녹음 가용 인원")
+#     # member = list_name.get(0, END) # 가용 가능 인원
+#     # ws_available.append(member)
+    
+#     wb.save("스무살롱_녹음일정.xlsx")
+#     wb.close()
 
-    wb.save("스무살롱_녹음일정.xlsx")
-    wb.close()
+def add_schedule():
+    pass
 
 # Create root window
 root = Tk()
@@ -76,9 +78,21 @@ root = Tk()
 # Configure screen setting
 set_screen()
 
+# 연도를 설정할 수 있는 Combobox
+values_year = [str(i) + "년" for i in range(2024, 2100)]
+combobox_year = ttk.Combobox(root, width=20, height=5, values=values_year, state="readonly")
+combobox_year.grid(row=0, column=0, padx=5, pady=5)
+combobox_year.set("연도")
+
+# 월을 설정할 수 있는 Combobox
+values_month = [str(i) + "월" for i in range(1, 13)]
+combobox_month = ttk.Combobox(root, width=10, height=5, values=values_month, state="readonly")
+combobox_month.grid(row=0, column=1, padx=5, pady=5)
+combobox_month.set("월")
+
 # Set frame to manage to member
 frame_member = LabelFrame(root, text="녹음 인원 관리")
-frame_member.grid(row=0, column=0, rowspan=2, sticky=N+E+W+S, padx=5, pady=5)
+frame_member.grid(row=1, column=0, rowspan=2, sticky=N+E+W+S, padx=5, pady=5)
 
 # 멤버 목록 표시를 위한 listbox
 list_name = Listbox(frame_member, width=15)
@@ -108,7 +122,7 @@ button_clear.grid(row=2, column=0, columnspan=3, sticky=N+E+W+S, padx=3, pady=3)
 
 # Set frame to manage number of member
 frame_number_member = LabelFrame(root, text="녹음 인원 설정")
-frame_number_member.grid(row=0, column=1, padx=5, pady=5)
+frame_number_member.grid(row=1, column=1, padx=5, pady=5)
 
 # Radiobutton row 값 설정
 row = 0
@@ -126,7 +140,7 @@ for i in range(2, 7):
 
 # Set frame to manage number of team
 frame_number_team = LabelFrame(root, text="녹음 팀 설정")
-frame_number_team.grid(row=1, column=1, sticky=N+E+W+S, padx=5, pady=5)
+frame_number_team.grid(row=2, column=1, sticky=N+E+W+S, padx=5, pady=5)
 
 # 녹음 팀 수를 1 ~ 4팀으로 설정 가능한 Radiobutton 생성
 team_var = IntVar()
@@ -141,10 +155,17 @@ for i in range(1, 5):
 
 # 녹음일정 엑셀 파일에 추가하기
 button_add_schedule = Button(root, text="일정 추가", command=add_schedule)
-button_add_schedule.grid(row=2, column=0, sticky=N+E+W+S, padx=3, pady=3)
+button_add_schedule.grid(row=3, column=0, sticky=N+E+W+S, padx=3, pady=3)
 
 # 앱 종료
 button_quit = Button(root, text="종료", command=root.quit)
-button_quit.grid(row=2, column=1, sticky=N+E+W+S, padx=3, pady=3)
+button_quit.grid(row=3, column=1, sticky=N+E+W+S, padx=3, pady=3)
+
+def btncmd() :
+   print(combobox_year.get()[:4])
+   print(combobox_month.get()[:1])
+
+btn = Button(text="선택", command=btncmd)
+btn.grid(row=4)
 
 root.mainloop()
